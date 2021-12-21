@@ -1,0 +1,9 @@
+{
+    "slug": "getting-started",
+    "title": "Getting Started",
+    "image": "getting-started.png",
+    "excerpt": "KCG CMS is getting started",
+    "date": "2021-03-10",
+    "isFeatured": true,
+    "content": "<h1>This is a first poster</h1> <p> Some yummy getting started HTML stuff :-) </p>"
+}
