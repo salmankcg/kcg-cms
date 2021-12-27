@@ -6,9 +6,9 @@ import MainContentArea from '../MainContentArea/MainContentArea';
 
 function Layout({children}) {
 
-    console.log('children',children)
+   
     return (
-        <Box className='h-screen'>
+        <Box className='h-screen bg-white'>
             <Header/>
             <Box className='flex h-full'>
                 <Sidebar/>

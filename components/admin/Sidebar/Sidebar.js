@@ -1,8 +1,9 @@
-import {Fragment, useState} from 'react';
+import {Fragment, useState, useEffect} from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import MenuIcon from '@mui/icons-material/Menu';
+// import MenuIcon from '@mui/icons-material/Menu';
 import Button from '@mui/material/Button';
+
 import Box from '@mui/material/Box';
 import MenuList from '@mui/material/MenuList';
 import List from '@mui/material/List';
@@ -15,7 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import DescriptionIcon from '@mui/icons-material/Description';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Avatar from '@mui/material/Avatar';
-
+import Link from 'next/link'
 
 
 
@@ -28,76 +29,81 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
 
+import Image from 'next/image'
+import {adminMenuList} from '../../../utils/adminMenuList'
 
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch
-} from "react-router-dom";
-import userImage from '../../assets/images/userimage.jpg'
 
 function Sidebar(props) {
 
-    const [open, setOpen] = useState(false);
+    const [menuOpen,setMenuOpen] = useState(false)
+    const [open, setOpen] = useState(null);
+    const [showdropdown,setShowdropdown] = useState(false)
 
 //   const handleClick = () => {
 //     setOpen(!open);
 //   };
 
+    const handleDropdown = (e,i) =>{
+        
+        setMenuOpen(i);
+        if(menuOpen !== i){
+            setShowdropdown(true);
+        }else{
+            setShowdropdown(!showdropdown);
+        }
+        
+    }
+
+    
+    console.log('i', menuOpen)
+    console.log('showdropdown', showdropdown)
 
     return (
         <Box className='w-64 border border-solid h-full'>
             <Box className='text-center py-4 border-b border-solid border-gray-200 bg-gray-100'>
-                <Avatar
-                className='inline-flex' 
-                alt="Remy Sharp" 
-                src={userImage} 
-                />
+                <Image src="/images/userimage.jpg" alt="me" width="64" height="64" className='rounded-full' />
                 <h5>Abdus Salam</h5>
             </Box>
             <Box>
-            <List
-                sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-                component="nav"
-                aria-labelledby="nested-list-subheader"
                 
-                >
-                <ListItemButton>
-                    <ListItemIcon>
-                    <SendIcon />
-                    </ListItemIcon>
-                    <Link to='/'>
-                        Dashboard
-                    </Link>
-                </ListItemButton>
-                <ListItemButton>
-                    <ListItemIcon>
-                    <DraftsIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Drafts" />
-                </ListItemButton>
-                <ListItemButton onClick={()=>setOpen(!open)}>
-                    <ListItemIcon>
-                    <InboxIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Pages" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                    <ListItemButton sx={{ pl: 4 }}>
-                        <ListItemIcon>
-                        <StarBorder />
-                        </ListItemIcon>
-                        <Link to='/editor-test'>
-                            Editor Test
-                        </Link>
-                    </ListItemButton>
-                    </List>
-                </Collapse>
-                </List>
+                <ul>
+                {
+                    adminMenuList.map((item,i)=>{
+                        if(item?.dropdown){
+                            return(
+                                <li className={`has-dropdown  border cursor-pointer  ${menuOpen === i && showdropdown === true ? ' showing ': ' collapsed '} `} key={i} onClick={(e)=>handleDropdown(e,i)}>
+                                    <span className='p-2 w-full block'>
+                                        {item.label}
+                                    </span>
+                                    <ul className={`sub-menu pl-2 ${menuOpen === i && showdropdown === true ? ' fadeIn show-dropdown block  ': 'hide-dropdown hidden '}`} >
+                                        {item.dropdown.map((sitem, j) => {
+                                        return (
+                                            <li key={j} className='p-2 border cursor-pointer '>
+                                            <Link href={`${sitem.link}`}>
+                                                <a>
+                                                {sitem.label}
+                                                </a>
+                                            </Link>
+                                            </li>
+                                        );
+                                        })}
+                                    </ul>
+                                </li>
+                            )
+                        }else{
+                            return(
+                                <li key={i} className='p-2 border cursor-pointer' onClick={(e)=>handleDropdown(e,i)}>
+                                    <Link href={`${item.link}`}>
+                                        <a>
+                                            {item.label}
+                                        </a>
+                                    </Link>
+                                </li>
+                            )
+                        }
+                    })
+                }
+                </ul>
             </Box>
         </Box>
     );
